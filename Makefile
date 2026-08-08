@@ -4,7 +4,7 @@ LDFLAGS=-ldflags "-w -s -X main.version=${VERSION} -X main.commit=${GITCOMMIT}"
 
 all: mackerel-plugin-pdns
 
-.PHONY: mackerel-plugin-pdns
+.PHONY: mackerel-plugin-pdns linux check lint
 
 mackerel-plugin-pdns: cmd/mackerel-plugin-pdns/*.go
 	go build $(LDFLAGS) -o mackerel-plugin-pdns ./cmd/mackerel-plugin-pdns/
