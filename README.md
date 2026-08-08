@@ -5,4 +5,4 @@ Golang port of [hanazuki/mackerel-plugin-pdns](https://github.com/hanazuki/macke
 
 ## Install
 
-Download from release page or `mkr plugin install kazeburo/mackerel-plugin-pdns`.
+Download from release page or `mkr plugin install monitoring-forge/mackerel-plugin-pdns`.

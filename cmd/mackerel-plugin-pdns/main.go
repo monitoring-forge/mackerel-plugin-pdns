@@ -4,21 +4,26 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
 
 	"github.com/jessevdk/go-flags"
 	mp "github.com/mackerelio/go-mackerel-plugin"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
+
+var version string
+var commit string
 
 const (
-	StatusCodeOK      = 0
-	StatusCodeWARNING = 1
+	OK = iota
+	WARNING
+	CRITICAL
+	UNKNOWN
 )
-
-// version by Makefile
-var version string
 
 type Opt struct {
 	Version     bool   `short:"v" long:"version" description:"Show version"`
@@ -39,7 +44,7 @@ func (p *Plugin) MetricKeyPrefix() string {
 }
 
 func (p *Plugin) GraphDefinition() map[string]mp.Graphs {
-	labelPrefix := strings.Title(p.Prefix)
+	labelPrefix := cases.Title(language.Und).String(p.Prefix)
 	return map[string]mp.Graphs{
 		"dnsupdate": {
 			Label: labelPrefix + ": Dynamic DNS Update",
@@ -191,7 +196,7 @@ func (u *Plugin) FetchMetrics() (map[string]float64, error) {
 		return nil, err
 	}
 	result := map[string]float64{}
-	for _, b := range strings.Split(string(buf), ",") {
+	for b := range strings.SplitSeq(string(buf), ",") {
 		kv := strings.SplitN(b, "=", 2)
 		if len(kv) != 2 {
 			continue
@@ -211,23 +216,30 @@ func (u *Plugin) Run() {
 }
 
 func main() {
-	opt := Opt{}
-	psr := flags.NewParser(&opt, flags.HelpFlag|flags.PassDoubleDash)
+	opt := &Opt{}
+	psr := flags.NewParser(opt, flags.HelpFlag|flags.PassDoubleDash)
 	_, err := psr.Parse()
 	if opt.Version {
-		fmt.Printf(`%s %s
-Compiler: %s %s
-`,
-			os.Args[0],
+		if commit == "" {
+			commit = "dev"
+		}
+		fmt.Printf(
+			"%s-%s\n%s/%s, %s, %s\n",
+			filepath.Base(os.Args[0]),
 			version,
-			runtime.Compiler,
-			runtime.Version())
-		os.Exit(StatusCodeOK)
-	}
-	if err != nil {
+			runtime.GOOS,
+			runtime.GOARCH,
+			runtime.Version(),
+			commit)
+		os.Exit(OK)
+	} else if flags.WroteHelp(err) {
+		fmt.Fprintf(os.Stdout, "%v\n", err)
+		os.Exit(OK)
+	} else if err != nil {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(StatusCodeWARNING)
+		os.Exit(UNKNOWN)
 	}
+
 	u := &Plugin{
 		Prefix:      opt.Prefix,
 		CommandPath: opt.CommandPath,
