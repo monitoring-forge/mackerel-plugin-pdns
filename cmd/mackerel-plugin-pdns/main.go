@@ -1,23 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"os"
-	"path/filepath"
-	"runtime"
 
-	"github.com/jessevdk/go-flags"
+	"github.com/monitoring-forge/flagrun"
 )
 
 var version string
-var commit string
-
-const (
-	OK = iota
-	WARNING
-	CRITICAL
-	UNKNOWN
-)
 
 type Opt struct {
 	Version     bool   `short:"v" long:"version" description:"Show version"`
@@ -25,34 +14,14 @@ type Opt struct {
 	CommandPath string `long:"control-command" default:"/usr/bin/pdns_control" description:"Path to pdns_control command"`
 }
 
-func main() {
-	opt := &Opt{}
-	psr := flags.NewParser(opt, flags.HelpFlag|flags.PassDoubleDash)
-	_, err := psr.Parse()
-	if opt.Version {
-		if commit == "" {
-			commit = "dev"
-		}
-		fmt.Printf(
-			"%s-%s\n%s/%s, %s, %s\n",
-			filepath.Base(os.Args[0]),
-			version,
-			runtime.GOOS,
-			runtime.GOARCH,
-			runtime.Version(),
-			commit)
-		os.Exit(OK)
-	} else if flags.WroteHelp(err) {
-		fmt.Fprintf(os.Stdout, "%v\n", err)
-		os.Exit(OK)
-	} else if err != nil {
-		fmt.Fprintf(os.Stderr, "%v\n", err)
-		os.Exit(UNKNOWN)
-	}
-
+func (o *Opt) Run(_ []string) {
 	u := &Plugin{
-		Prefix:      opt.Prefix,
-		CommandPath: opt.CommandPath,
+		Prefix:      o.Prefix,
+		CommandPath: o.CommandPath,
 	}
 	u.Run()
+}
+
+func main() {
+	os.Exit(flagrun.Ship(&Opt{}, flagrun.Version(version)))
 }
