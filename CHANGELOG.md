@@ -1,5 +1,10 @@
 # Changelog
 
+## [v0.1.3](https://github.com/monitoring-forge/mackerel-plugin-pdns/compare/v0.1.2...v0.1.3) - 2026-09-21
+
+- go: bump the dependencies group across 1 directory with 3 updates by @dependabot[bot] in https://github.com/monitoring-forge/mackerel-plugin-pdns/pull/18
+- ci: bump Songmu/tagpr from 1.20.2 to 1.20.3 in the dependencies group by @dependabot[bot] in https://github.com/monitoring-forge/mackerel-plugin-pdns/pull/17
+
 ## [v0.1.2](https://github.com/monitoring-forge/mackerel-plugin-pdns/compare/v0.1.1...v0.1.2) - 2026-09-02
 
 - Sync files with `monitoring-forge/github-common` by @monitoring-forge-files-sync-action[bot] in https://github.com/monitoring-forge/mackerel-plugin-pdns/pull/9
