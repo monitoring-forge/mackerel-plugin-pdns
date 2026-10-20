@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/mackerelio/go-mackerel-plugin v0.1.6
-	golang.org/x/text v0.42.0
+	golang.org/x/text v0.43.0
 )
 
 require (
@@ -17,5 +17,5 @@ require (
 	github.com/mackerelio/golib v1.2.2 // indirect
 	github.com/monitoring-forge/flagrun v0.0.10
 	github.com/stretchr/testify v1.12.1
-	golang.org/x/sys v0.48.0 // indirect
+	golang.org/x/sys v0.49.0 // indirect
 )
