@@ -18,5 +18,5 @@ require (
 	github.com/mackerelio/golib v1.2.2 // indirect
 	github.com/monitoring-forge/flagrun v0.0.11
 	github.com/stretchr/testify v1.12.1
-	golang.org/x/sys v0.49.0 // indirect
+	golang.org/x/sys v0.50.0 // indirect
 )
